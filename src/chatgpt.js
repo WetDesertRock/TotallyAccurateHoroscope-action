@@ -36,7 +36,9 @@ async function generateHoroscope(prompt) {
       { role: "user", content: prompt }
     ],
     max_tokens: 1000,
-    function_call: { "name": "writeHoroscope" }
+    function_call: { "name": "writeHoroscope" },
+    presence_penalty: 0.23,
+    frequency_penalty: 0.23
   })
 
   console.log(chat_completion.data)

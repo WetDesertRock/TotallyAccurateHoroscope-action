@@ -6,43 +6,24 @@ Write a horoscope for all 12 months inspired by <object> in the style of a <styl
 
 Stopped at medicine
 */
-// Object types are split by category, to ensure one category isn't overrepresented
-let objectLists = {
-  "Animals": [ // Animals
-    { path: "corpora/data/animals/common.json", jsonElem: "animals" }
-  ],
-  "Misc": [ // Misc random things
-    { path: "corpora/data/foods/menuItems.json", jsonElem: "menuItems" },
-    { path: "corpora/data/materials/packaging.json", jsonElem: "packaging" },
-  ],
-  "PopCulture": [ // Movies/pop culture
-    { path: "corpora/data/film-tv/extended-netflix-categories.json", jsonElem: "data" },
-    { path: "corpora/data/film-tv/popular-movies.json", jsonElem: "popular-movies" },
-    { path: "corpora/data/humans/famousDuos.json", jsonElem: "famousDuos" },
-  ],
-  "Geology": [ // Geology
-    { path: "corpora/data/geography/anthropogenic_features.json", jsonElem: "entries" },
-    { path: "corpora/data/geography/geographic_features.json", jsonElem: "entries" },
-    { path: "corpora/data/geography/environmental_hazards.json", jsonElem: "entries" },
-  ],
-  "Concepts and stuff": [ // Concepts and stuff
-    { path: "corpora/data/humans/human_universals.json", jsonElem: "universals" },
-  ]
-}
+let focusLists = [
+  "src/data/focuses.json",
+  "src/data/goofyFocuses.json",
+]
+
+let moodLists = [
+  "src/data/moods.json",
+  "src/data/emotions.json",
+]
 
 let styleLists = [
-  { path: "corpora/data/books/academic_subjects.json", jsonElem: "subjects" },
-  { path: "corpora/data/art/isms.json", jsonElem: "isms" },
-  { path: "corpora/data/governments/governmentForms.json", jsonElem: "governmentForms" },
-  { path: "corpora/data/humans/moods.json", jsonElem: "moods" },
-  { path: "corpora/data/humans/occupations.json", jsonElem: "occupations" },
+  "src/data/customstyles.json",
+  "src/data/styles.json"
 ]
 
-let additiveLists = [
-  { path: "corpora/data/foods/verbs.json", jsonElem: "verbs" },
-  { path: "corpora/data/humans/descriptions.json", jsonElem: "descriptions" },
+let wordLists = [
+  "src/data/misc_words.json"
 ]
-
 
 function shuffleArray(arr) {
   for (var i = arr.length - 1; i > 0; i--) {
@@ -58,15 +39,16 @@ function randomChoice(arr) {
   return arr[i]
 }
 
-async function loadDataList(path, jsonElem) {
+async function loadDataList(path) {
   let data = JSON.parse(await readFile(path))
-  return data[jsonElem]
+  return data
 }
 
 class DataLists {
-  objects = {}
   styles = []
-  additives = []
+  moods = []
+  focuses = []
+  words = []
   hasInit = false
 
   async init() {
@@ -77,94 +59,87 @@ class DataLists {
     let promises = []
 
     // Load our objects
-    for (let category of Object.keys(objectLists)) {
-      let categoryLists = objectLists[category]
-      this.objects[category] = []
-
-      for (let categoryFile of categoryLists) {
-        promises.push((async () => {
-          let dataList = await loadDataList(categoryFile.path, categoryFile.jsonElem)
-          this.objects[category].push(...dataList)
-        })())
-      }
-    }
-
-    for (let styleFile of styleLists) {
+    for (let list of focusLists) {
       promises.push((async () => {
-        let dataList = await loadDataList(styleFile.path, styleFile.jsonElem)
-        this.styles.push(dataList)
+        let dataList = await loadDataList(list)
+        this.focuses.push(...dataList)
       })())
     }
-
-    for (let additiveList of additiveLists) {
+    for (let list of styleLists) {
       promises.push((async () => {
-        let dataList = await loadDataList(additiveList.path, additiveList.jsonElem)
-        this.additives.push(...dataList)
+        let dataList = await loadDataList(list)
+        this.styles.push(...dataList)
+      })())
+    }
+    for (let list of moodLists) {
+      promises.push((async () => {
+        let dataList = await loadDataList(list)
+        this.moods.push(...dataList)
+      })())
+    }
+    for (let list of wordLists) {
+      promises.push((async () => {
+        let dataList = await loadDataList(list)
+        this.words.push(...dataList)
       })())
     }
 
     await Promise.all(promises)
   }
 
-  randomObject(includeAdditive) {
-    let objectList = randomChoice(Object.values(this.objects))
-    let obj = randomChoice(objectList)
-
-    if (includeAdditive) {
-      obj = this.randomAdditive() + " " + obj
-    }
-
-    return obj
+  randomFocus() {
+    return randomChoice(Object.values(this.focuses))
   }
-  randomObjects(includeAdditive, count) {
-    let objs = []
-    for (let i = 0; i < count; i++) {
-      objs.push(this.randomObject(includeAdditive))
-    }
-    return objs
+  randomFocuses(count) {
+    shuffleArray(this.focuses)
+    return this.focuses.slice(0, count)
   }
 
   randomStyle() {
-    let styleList = randomChoice(this.styles)
-    return randomChoice(styleList)
+    return randomChoice(this.styles)
   }
   randomStyles(count) {
-    let styles = []
-    for (let i = 0; i < count; i++) {
-      styles.push(this.randomStyle())
-    }
-    return styles
+    shuffleArray(this.styles)
+    return this.styles.slice(0, count)
   }
 
-  randomAdditive() {
-    return randomChoice(this.additives)
+  randomMood() {
+    return randomChoice(this.moods)
   }
-  randomAdditives(count) {
-    let additives = []
-    for (let i = 0; i < count; i++) {
-      additives.push(this.randomAdditive())
-    }
-    return additives
+  randomMoods(count) {
+    shuffleArray(this.moods)
+    return this.moods.slice(0, count)
+  }
+
+  randomWord() {
+    return randomChoice(this.words)
+  }
+  randomWords(count) {
+    shuffleArray(this.words)
+    return this.words.slice(0, count)
   }
 }
 
 
-async function generatePrompt() {
+export async function generatePrompt() {
   let dataLists = new DataLists()
   await dataLists.init()
 
-  let style = dataLists.randomAdditive() + " " + dataLists.randomStyle()
+  let style = dataLists.randomStyle()
+  let mood = dataLists.randomMood()
 
-  let objectCount = 4
-  let objects = dataLists.randomObjects(true, objectCount)
-  let objectString = '- ' + objects.join('\n- ')
+  let focusCount = 12
+  let focuses = dataLists.randomFocuses(focusCount)
+  let focusString = '- ' + focuses.join('\n- ')
 
-  return `Write a horoscope for all 12 signs using a different theme for each selecting one of these themes:
-${objectString}
-Do not repeat the theme verbatim in the response.
-The horoscopes should be in the style of ${style}. Do not use "${style}" verbatim in your response.
-Each horoscope should be 1-4 sentences in length`
+  let wordCount = 12
+  let words = dataLists.randomWords(wordCount)
+  let wordString = '- ' + words.join('\n- ')
+
+  return `Write a horoscope for all 12 signs for July 26th 2023 inspired by a different focus for each. Ensure you do not include the focus in the response::
+${focusString}
+The horoscopes should be in the style of ${style} and the mood of ${mood}
+Each horoscope should be 1-4 sentences in length.
+Your response should include these words at least once:
+${wordString}`
 }
-
-export { generatePrompt }
-
