@@ -4,6 +4,9 @@ import { generatePrompt } from "./promptgenerator.js"
 import { generateHoroscope } from './chatgpt.js'
 import { randomChoice } from './randomUtil.js'
 import zodiacInfo from './zodiac.js'
+import log4js from 'log4js';
+
+const logger = log4js.getLogger();
 
 const AUTHORS = [
   "Sage Thompson",
@@ -37,6 +40,7 @@ export class Post {
   }
 
   async generateFakeHoroscope() {
+    logger.log('Generating fake horoscope')
     let horo = {}
     for (let zodiac of zodiacInfo) {
       let confience = randomChoice(["will", "might", "possibly", "probably will not", "will not", "definitely won't"])
@@ -48,6 +52,7 @@ export class Post {
 
   async create() {
     let prompt = await generatePrompt(this.date)
+    logger.log('Prompt used: ' + prompt)
     let horoscope = undefined
     if (this.localRun) {
       horoscope = await this.generateFakeHoroscope()
@@ -85,6 +90,7 @@ ${zodiacHoroscope}
     template = template.replace(".Content", contentStr)
     console.log(typeof template)
 
+    logger.log(`Saving horoscope to ${outputPath}`)
     await writeFile(outputPath, template)
   }
 }

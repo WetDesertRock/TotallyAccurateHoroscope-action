@@ -1,5 +1,9 @@
 import dotenv from 'dotenv'
 import { Configuration, OpenAIApi } from "openai"
+import zodiacInfo from './zodiac.js'
+import log4js from 'log4js';
+
+const logger = log4js.getLogger();
 
 dotenv.config()
 
@@ -8,6 +12,10 @@ const configuration = new Configuration({
 });
 
 export async function generateHoroscope(prompt) {
+  let funcParamProperties = {}
+  for (let zodiac of zodiacInfo) {
+    funcParamProperties[zodiac.name] = { "type": "string" }
+  }
   const openai = new OpenAIApi(configuration)
   const chat_completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
@@ -16,20 +24,7 @@ export async function generateHoroscope(prompt) {
       "description": "Takes horoscope and writes it",
       "parameters": {
         "type": "object",
-        "properties": {
-          "Aries": { "type": "string" },
-          "Taurus": { "type": "string" },
-          "Gemini": { "type": "string" },
-          "Cancer": { "type": "string" },
-          "Leo": { "type": "string" },
-          "Virgo": { "type": "string" },
-          "Libra": { "type": "string" },
-          "Scorpius": { "type": "string" },
-          "Sagittarius": { "type": "string" },
-          "Capricornus": { "type": "string" },
-          "Aquarius": { "type": "string" },
-          "Pisces": { "type": "string" }
-        },
+        "properties": funcParamProperties,
       },
     }],
     messages: [
@@ -41,10 +36,12 @@ export async function generateHoroscope(prompt) {
     frequency_penalty: 0.23
   })
 
-  console.log(chat_completion.data)
-  console.log("Usage", chat_completion.data.usage)
+  logger.trace('ChatGPT Response data: ' + JSON.stringify(chat_completion.data))
+
+  let usage = chat_completion.data.usage
+  logger.info(`ChatGPT token usage info: Prompt: ${usage.prompt_tokens}, Completion: ${usage.completion_tokens}, Total: ${usage.total_tokens}`)
+
   let choice = chat_completion.data.choices[0]
-  console.log(choice)
   let args = JSON.parse(choice.message.function_call.arguments)
   return args
 }

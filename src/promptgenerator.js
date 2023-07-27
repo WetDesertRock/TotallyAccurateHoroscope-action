@@ -133,7 +133,7 @@ export async function generatePrompt(datetime) {
 
   let formattedDate = datetime.toFormat('LLLL dd yy')
 
-  return `Write a horoscope for all 12 signs for ${formattedDate} inspired by a different focus for each. Ensure you do not include the focus in the response::
+  return `Write a horoscope for all 12 signs for ${formattedDate} inspired by a different focus for each. Ensure you do not include the focus in the response:
 ${focusString}
 The horoscopes should be in the style of ${style} and the mood of ${mood}
 Each horoscope should be 1-4 sentences in length.
