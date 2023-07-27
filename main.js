@@ -1,5 +1,6 @@
 // import { writeFile } from 'node:fs/promises';
 import { generateHoroscope } from './src/chatgpt.js';
+import { Post } from './src/post.js';
 import { generatePrompt } from './src/promptgenerator.js';
 
 
@@ -9,7 +10,9 @@ async function writeHoroscope(path, horoscope) {
 }
 
 async function main() {
-  console.log(await generatePrompt())
+  let post = new Post("unused", "./", true)
+  await post.create()
+  // console.log(await generatePrompt())
   // let horoscope = await generateHoroscope()
 }
 

@@ -7,7 +7,7 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function generateHoroscope(prompt) {
+export async function generateHoroscope(prompt) {
   const openai = new OpenAIApi(configuration)
   const chat_completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
@@ -48,5 +48,3 @@ async function generateHoroscope(prompt) {
   let args = JSON.parse(choice.message.function_call.arguments)
   return args
 }
-
-export { generateHoroscope }

@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { shuffleArray, randomChoice } from './randomUtil.js';
 
 /*
 Write a horoscope for all 12 months inspired by plants in the style of a romance novel. Each horoscope should be 1-4 sentences in length
@@ -24,20 +25,6 @@ let styleLists = [
 let wordLists = [
   "src/data/misc_words.json"
 ]
-
-function shuffleArray(arr) {
-  for (var i = arr.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1))
-    var temp = arr[i]
-    arr[i] = arr[j]
-    arr[j] = temp
-  }
-}
-
-function randomChoice(arr) {
-  var i = Math.floor(Math.random() * arr.length)
-  return arr[i]
-}
 
 async function loadDataList(path) {
   let data = JSON.parse(await readFile(path))
@@ -130,7 +117,7 @@ class DataLists {
   }
 }
 
-export async function generatePrompt() {
+export async function generatePrompt(datetime) {
   let dataLists = await DataLists.getInstance()
 
   let style = dataLists.randomStyle()
@@ -144,7 +131,9 @@ export async function generatePrompt() {
   let words = dataLists.randomWords(wordCount)
   let wordString = '- ' + words.join('\n- ')
 
-  return `Write a horoscope for all 12 signs for July 26th 2023 inspired by a different focus for each. Ensure you do not include the focus in the response::
+  let formattedDate = datetime.toFormat('LLLL dd yy')
+
+  return `Write a horoscope for all 12 signs for ${formattedDate} inspired by a different focus for each. Ensure you do not include the focus in the response::
 ${focusString}
 The horoscopes should be in the style of ${style} and the mood of ${mood}
 Each horoscope should be 1-4 sentences in length.
