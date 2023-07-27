@@ -45,6 +45,7 @@ async function loadDataList(path) {
 }
 
 class DataLists {
+  static _singletonInstance
   styles = []
   moods = []
   focuses = []
@@ -118,12 +119,19 @@ class DataLists {
     shuffleArray(this.words)
     return this.words.slice(0, count)
   }
+
+  static async getInstance() {
+    if (!DataLists._singletonInstance) {
+      DataLists._singletonInstance = new DataLists()
+      await DataLists._singletonInstance.init()
+    }
+
+    return DataLists._singletonInstance
+  }
 }
 
-
 export async function generatePrompt() {
-  let dataLists = new DataLists()
-  await dataLists.init()
+  let dataLists = await DataLists.getInstance()
 
   let style = dataLists.randomStyle()
   let mood = dataLists.randomMood()
