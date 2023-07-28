@@ -1,0 +1,12 @@
+name: 'TotallyAccurateHoroscopeGenerator'
+description: 'Generates a horoscope using ChatGPT'
+inputs:
+  template-file:  # id of input
+    description: 'Path to the post template file to use'
+    required: true
+  output-path:  # id of input
+    description: 'Path to put the output file'
+    required: true
+runs:
+  using: 'node16'
+  main: 'main.js'
