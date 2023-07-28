@@ -1,5 +1,6 @@
-import { readFile } from 'node:fs/promises';
-import { shuffleArray, randomChoice } from './randomUtil.js';
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
+import { shuffleArray, randomChoice } from './randomUtil.js'
 
 /*
 Write a horoscope for all 12 months inspired by plants in the style of a romance novel. Each horoscope should be 1-4 sentences in length
