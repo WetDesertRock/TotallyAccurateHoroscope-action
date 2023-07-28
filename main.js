@@ -1,4 +1,4 @@
-const core = require('@actions/core');
+import core from '@actions/core';
 import { Post } from './src/post.js';
 import log4js from 'log4js';
 
