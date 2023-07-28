@@ -19,8 +19,9 @@ async function main() {
 
   const templatePath = core.getInput('template-file');
   const outputPath = core.getInput('output-path');
+  const openaiAPIKey = core.getInput('openai-api-key');
 
-  let post = new Post(templatePath, outputPath, true)
+  let post = new Post(templatePath, outputPath, openaiAPIKey)
   try {
     await post.create()
   } catch (error) {

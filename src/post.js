@@ -32,10 +32,10 @@ const AUTHORS = [
 ]
 
 export class Post {
-  constructor(templateFile, outputDir, localRun) {
+  constructor(templateFile, outputDir, openaiAPIKey) {
     this.templateFile = templateFile
     this.outputDir = outputDir
-    this.localRun = localRun
+    this.openaiAPIKey = openaiAPIKey
     this.date = DateTime.utc()
   }
 
@@ -54,10 +54,10 @@ export class Post {
     let prompt = await generatePrompt(this.date)
     logger.log('Prompt used: ' + prompt)
     let horoscope = undefined
-    if (this.localRun) {
+    if (!this.openaiAPIKey) {
       horoscope = await this.generateFakeHoroscope()
     } else {
-      horoscope = await generateHoroscope(prompt)
+      horoscope = await generateHoroscope(this.openaiAPIKey, prompt)
     }
 
     await this.writePostFile(prompt, horoscope)

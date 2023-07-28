@@ -7,6 +7,9 @@ inputs:
   output-path:  # id of input
     description: 'Path to put the output file'
     required: true
+  openai-api-key:
+    description: 'API key to used when communicating with ChatGPT. If not included this will generate a basic generated horoscope sutable for testing.'
+    required: false
 runs:
   using: 'node16'
   main: 'main.js'

@@ -1,21 +1,18 @@
-import dotenv from 'dotenv'
 import { Configuration, OpenAIApi } from "openai"
 import zodiacInfo from './zodiac.js'
 import log4js from 'log4js';
 
 const logger = log4js.getLogger();
 
-dotenv.config()
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-export async function generateHoroscope(prompt) {
+export async function generateHoroscope(openaiAPIKey, prompt) {
   let funcParamProperties = {}
   for (let zodiac of zodiacInfo) {
     funcParamProperties[zodiac.name] = { "type": "string" }
   }
+  const configuration = new Configuration({
+    apiKey: openaiAPIKey,
+  })
+
   const openai = new OpenAIApi(configuration)
   const chat_completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
