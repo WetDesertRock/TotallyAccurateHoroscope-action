@@ -7,28 +7,29 @@ Write a horoscope for all 12 months inspired by <object> in the style of a <styl
 
 Stopped at medicine
 */
+
 let focusLists = [
-  "src/data/focuses.json",
-  "src/data/goofyFocuses.json",
+  "data/focuses.json",
+  "data/goofyFocuses.json",
 ]
 
 let moodLists = [
-  "src/data/moods.json",
-  "src/data/emotions.json",
+  "data/moods.json",
+  "data/emotions.json",
 ]
 
 let styleLists = [
-  "src/data/customstyles.json",
-  "src/data/styles.json"
+  "data/customstyles.json",
+  "data/styles.json"
 ]
 
 let wordLists = [
-  "src/data/misc_words.json"
+  "data/misc_words.json"
 ]
 
-async function loadDataList(path) {
-  let data = JSON.parse(await readFile(path))
-  return data
+async function loadDataList(listPath) {
+  let data = await readFile(path.join(__dirname, listPath))
+  return JSON.parse(data)
 }
 
 class DataLists {
