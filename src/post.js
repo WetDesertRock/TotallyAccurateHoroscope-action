@@ -60,10 +60,10 @@ export class Post {
       horoscope = await generateHoroscope(prompt)
     }
 
-    await this.writePostFile(horoscope)
+    await this.writePostFile(prompt, horoscope)
   }
 
-  async writePostFile(horoscope) {
+  async writePostFile(prompt, horoscope) {
     let fileName = this.date.toFormat('yyyy-MM-dd') + '.md'
     let outputPath = `${this.outputDir}/${fileName}`
     let contentStr = ""
@@ -80,15 +80,13 @@ ${zodiacHoroscope}
 `
     }
 
-    let tags = ['accurate']
+    prompt = "  " + prompt.replaceAll("\n", "\n  ") // indent the prompt
     let template = await readFile(this.templateFile, { encoding: 'utf8' })
-    template = template.replace(/\{\{\s*\.Title\s*\}\}/g, this.date.toFormat('LLLL d y'))
-    template = template.replace(/\{\{\s*\.Date\s*\}\}/g, this.date.toISO())
-    template = template.replace(/\{\{\s*\.Tags\s*\}\}/g, JSON.stringify(tags))
-    template = template.replace(/\{\{\s*\.Author\s*\}\}/g, randomChoice(AUTHORS))
-    template = template.replace(/\{\{\s*\.Content\s*\}\}/g, contentStr)
-    template = template.replace(".Content", contentStr)
-    console.log(typeof template)
+    template = template.replaceAll(/\{\{\s*\.Title\s*\}\}/g, this.date.toFormat('LLLL d y'))
+    template = template.replaceAll(/\{\{\s*\.Date\s*\}\}/g, this.date.toISO())
+    template = template.replaceAll(/\{\{\s*\.Author\s*\}\}/g, randomChoice(AUTHORS))
+    template = template.replaceAll(/\{\{\s*\.Content\s*\}\}/g, contentStr)
+    template = template.replaceAll(/\{\{\s*\.Prompt\s*\}\}/g, prompt)
 
     logger.log(`Saving horoscope to ${outputPath}`)
     await writeFile(outputPath, template)
