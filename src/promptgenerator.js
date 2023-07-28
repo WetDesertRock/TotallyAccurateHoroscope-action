@@ -2,12 +2,8 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { shuffleArray, randomChoice } from './randomUtil.js'
 
-/*
-Write a horoscope for all 12 months inspired by plants in the style of a romance novel. Each horoscope should be 1-4 sentences in length
-Write a horoscope for all 12 months inspired by <object> in the style of a <style>. Each horoscope should be 1-4 sentences in length
-
-Stopped at medicine
-*/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let focusLists = [
   "data/focuses.json",
