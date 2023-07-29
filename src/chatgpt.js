@@ -27,7 +27,7 @@ export async function generateHoroscope(openaiAPIKey, prompt) {
     messages: [
       { role: "user", content: prompt }
     ],
-    max_tokens: 1000,
+    // max_tokens: 1000, // Removed to prevent JSON output from being cut off. Hopefully prompt encourages short enough responses.
     function_call: { "name": "writeHoroscope" },
     presence_penalty: 0.23,
     frequency_penalty: 0.23
